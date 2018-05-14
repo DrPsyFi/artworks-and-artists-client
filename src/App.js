@@ -39,20 +39,27 @@ class App extends Component {
       artist_id: artist.id
     })
 
+    const { data: { artists } } = await ArtistAPI.get()
     const artworks = await ArtworkAPI.getWithArtists()
-    this.setState({ ...this.state, artworks })
+    this.setState({ artworks, artists, selected: {} })
   }
 
   updateExistingArtwork = async ({ artist, artwork }) => {
-    await ArtistAPI.put(artist)
-    await ArtworkAPI.put(artwork)
+    if (!artist.id) {
+      const response = await ArtistAPI.post(artist)
+      artist = response.data.artist
+    } else {
+      await ArtistAPI.put(artist)
+    }
 
+    await ArtworkAPI.put({ ...artwork, artist_id: artist.id })
+
+    const { data: { artists } } = await ArtistAPI.get()
     const artworks = await ArtworkAPI.getWithArtists()
-    this.setState({ artworks, selected: {} })
+    this.setState({ artworks, artists, selected: {} })
   }
 
   render() {
-    console.log({ ...this.state })
     return (
       <main>
         <Header />

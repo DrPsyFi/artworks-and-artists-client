@@ -6,7 +6,7 @@ const NewArtworkForm = ({ artwork, artists=[], submitNewArtwork }) => {
     const { title, year, category, image, artist_id, first_name, last_name } = event.target
 
     let artist = artist_id.value ?
-      artists.find(artist => artist.id == artist_id.value) :
+      artists.find(artist => artist.id === artist_id.value) :
       { first_name: first_name.value, last_name: last_name.value }
 
     submitNewArtwork({
@@ -19,7 +19,7 @@ const NewArtworkForm = ({ artwork, artists=[], submitNewArtwork }) => {
       }
     })
 
-    const inputs = [ title, year, category, image, first_name, last_name ]
+    const inputs = [ title, year, category, image, artist_id, first_name, last_name ]
     inputs.forEach(input => input.value = '')
   }
 

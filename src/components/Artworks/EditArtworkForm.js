@@ -5,12 +5,12 @@ const EditArtworkForm = ({ artwork, artists=[], updateExistingArtwork }) => {
     event.preventDefault()
     const { title, year, category, image, artist_id, first_name, last_name } = event.target
 
+    let artist = artist_id.value ?
+      artists.find(artist => artist.id === artist_id.value) :
+      { first_name: first_name.value, last_name: last_name.value }
+
     updateExistingArtwork({
-      artist: {
-        id: artwork.artist.id,
-        first_name: first_name.value,
-        last_name: last_name.value
-      },
+      artist,
       artwork: {
         id: artwork.id,
         title: title.value,
@@ -20,7 +20,7 @@ const EditArtworkForm = ({ artwork, artists=[], updateExistingArtwork }) => {
       }
     })
 
-    const inputs = [ title, year, category, image, first_name, last_name ]
+    const inputs = [ title, year, category, image, artist_id, first_name, last_name ]
     inputs.forEach(input => input.value = '')
   }
 
@@ -71,7 +71,7 @@ const EditArtworkForm = ({ artwork, artists=[], updateExistingArtwork }) => {
           <div className="col">
             <div className="form-group">
               <label htmlFor="artist">Artist</label>
-              <select className="form-control" id="artist">
+              <select className="form-control" name="artist_id" id="artist" defaultValue={ artwork.artist.id }>
                 <option value="">-- Select an Artist --</option>
                 { options }
               </select>
@@ -81,13 +81,13 @@ const EditArtworkForm = ({ artwork, artists=[], updateExistingArtwork }) => {
           <div className="col">
             <div className="form-group">
               <label htmlFor="artist-first-name">Artist First Name</label>
-              <input type="text" name="first_name" className="form-control" id="artist-first-name" defaultValue={ artwork.artist.first_name } />
+              <input type="text" name="first_name" className="form-control" id="artist-first-name" />
             </div>
           </div>
           <div className="col">
             <div className="form-group">
               <label htmlFor="artist-last-name">Artist Last Name</label>
-              <input type="text" name="last_name" className="form-control" id="artist-last-name" defaultValue={ artwork.artist.last_name } />
+              <input type="text" name="last_name" className="form-control" id="artist-last-name" />
             </div>
           </div>
         </div>
