@@ -1,9 +1,9 @@
 import React from 'react'
 
-const EditArtworkForm = ({ artwork, updateExistingArtwork }) => {
+const EditArtworkForm = ({ artwork, artists=[], updateExistingArtwork }) => {
   const handleSubmit = (event) => {
     event.preventDefault()
-    const { title, year, category, image, first_name, last_name } = event.target
+    const { title, year, category, image, artist_id, first_name, last_name } = event.target
 
     updateExistingArtwork({
       artist: {
@@ -24,10 +24,14 @@ const EditArtworkForm = ({ artwork, updateExistingArtwork }) => {
     inputs.forEach(input => input.value = '')
   }
 
+  const options = artists.map(artist => {
+    return <option value={ artist.id } key={ artist.id }>{ artist.first_name } { artist.last_name }</option>
+  })
+
   return (
     <div className="col">
       <h2 className="text-center">
-        { artwork.id ? `Editing ${ artwork.title }` : "New Artwork Form" }
+        Editing { artwork.title }
       </h2>
       <hr/>
       <form onSubmit={ handleSubmit }>
@@ -69,6 +73,7 @@ const EditArtworkForm = ({ artwork, updateExistingArtwork }) => {
               <label htmlFor="artist">Artist</label>
               <select className="form-control" id="artist">
                 <option value="">-- Select an Artist --</option>
+                { options }
               </select>
             </div>
           </div>

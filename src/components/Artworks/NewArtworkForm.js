@@ -1,15 +1,16 @@
 import React from 'react'
 
-const NewArtworkForm = ({ artwork, submitNewArtwork }) => {
+const NewArtworkForm = ({ artwork, artists=[], submitNewArtwork }) => {
   const handleSubmit = (event) => {
     event.preventDefault()
-    const { title, year, category, image, first_name, last_name } = event.target
+    const { title, year, category, image, artist_id, first_name, last_name } = event.target
+
+    let artist = artist_id.value ?
+      artists.find(artist => artist.id == artist_id.value) :
+      { first_name: first_name.value, last_name: last_name.value }
 
     submitNewArtwork({
-      artist: {
-        first_name: first_name.value,
-        last_name: last_name.value
-      },
+      artist,
       artwork: {
         title: title.value,
         year: year.value,
@@ -21,6 +22,17 @@ const NewArtworkForm = ({ artwork, submitNewArtwork }) => {
     const inputs = [ title, year, category, image, first_name, last_name ]
     inputs.forEach(input => input.value = '')
   }
+
+  const artistInputHandler = (event) => {
+    const firstName = document.querySelector('#artist-first-name')
+    const lastName = document.querySelector('#artist-last-name')
+
+    firstName.disabled = lastName.disabled = !!event.target.value
+  }
+
+  const options = artists.map(artist => {
+    return <option value={ artist.id } key={ artist.id }>{ artist.first_name } { artist.last_name }</option>
+  })
 
   return (
     <div className="col">
@@ -63,8 +75,9 @@ const NewArtworkForm = ({ artwork, submitNewArtwork }) => {
           <div className="col">
             <div className="form-group">
               <label htmlFor="artist">Artist</label>
-              <select className="form-control" id="artist">
+              <select className="form-control" name="artist_id" id="artist" onChange={ artistInputHandler }>
                 <option value="">-- Select an Artist --</option>
+                { options }
               </select>
             </div>
           </div>

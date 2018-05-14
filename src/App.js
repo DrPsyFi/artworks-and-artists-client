@@ -13,12 +13,14 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 class App extends Component {
   state = {
     artworks: [],
+    artists: [],
     selected: {}
   }
 
   componentWillMount = async () => {
+    const { data: { artists } } = await ArtistAPI.get()
     const artworks = await ArtworkAPI.getWithArtists()
-    this.setState({ ...this.state, artworks })
+    this.setState({ ...this.state, artworks, artists })
   }
 
   handleEdit = async (artwork) => {
@@ -27,10 +29,14 @@ class App extends Component {
   }
 
   submitNewArtwork = async ({ artist, artwork }) => {
-    const artistResponse = await ArtistAPI.post(artist)
+    if (!artist.id) {
+      const response = await ArtistAPI.post(artist)
+      artist = response.data.artist
+    }
+
     await ArtworkAPI.post({
       ...artwork,
-      artist_id: artistResponse.data.artist.id
+      artist_id: artist.id
     })
 
     const artworks = await ArtworkAPI.getWithArtists()
@@ -46,6 +52,7 @@ class App extends Component {
   }
 
   render() {
+    console.log({ ...this.state })
     return (
       <main>
         <Header />
@@ -54,8 +61,8 @@ class App extends Component {
             <ArtworksList artworks={ this.state.artworks } handleEdit={ this.handleEdit } />
             {
               this.state.selected.id ?
-              <EditArtworkForm updateExistingArtwork={ this.updateExistingArtwork } artwork={ this.state.selected } /> :
-              <NewArtworkForm submitNewArtwork={ this.submitNewArtwork } />
+              <EditArtworkForm updateExistingArtwork={ this.updateExistingArtwork } artwork={ this.state.selected } { ...this.state } /> :
+              <NewArtworkForm submitNewArtwork={ this.submitNewArtwork } { ...this.state } />
             }
           </div>
         </div>
